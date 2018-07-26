@@ -22,7 +22,7 @@ func TestMakeRequest(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err2 := MakeRequest(client, "GET", "/user")
+	_, err2 := client.MakeRequest("GET", "/user")
 
 	if err2 != nil {
 		t.Fatal(err)

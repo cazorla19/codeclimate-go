@@ -2,10 +2,8 @@ package codeclimate
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -40,17 +38,17 @@ func NewClient(token string, opts ...Option) (*Client, error) {
 	return client, nil
 }
 
-func MakeRequest(client *Client, method string, path string) (string, error) {
+func (c *Client) MakeRequest(method string, path string) (string, error) {
 	httpClient := &http.Client{}
 	postData := make([]byte, 100)
-	targetUrl := client.ApiBasePath + path
+	targetUrl := c.ApiBasePath + path
 	req, err := http.NewRequest(strings.ToUpper(method), targetUrl, bytes.NewReader(postData))
 
 	if err != nil {
 		return "", err
 	}
 
-	authHeader := "Token token=" + client.ApiToken
+	authHeader := "Token token=" + c.ApiToken
 	req.Header.Add("Accept", "application/vnd.api+json")
 	req.Header.Add("Authorization", authHeader)
 	resp, err := httpClient.Do(req)
