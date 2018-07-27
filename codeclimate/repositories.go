@@ -1,7 +1,14 @@
+// TODO!
+// 1. Implement method to create private repositories
+// 2. Implement method to create public repositories
+// 3. Implement method to update repositories
+// 4. Implement method to delete repositories
+
 package codeclimate
 
 import (
 	"encoding/json"
+	"strings"
 )
 
 type CodeClimateRepositoryData struct {
@@ -14,9 +21,11 @@ type CodeClimateRepository struct {
 }
 
 type CodeClimateRepositoryAttributes struct {
-	Name          string  `json:"human_name"`
-	DefaultBranch string  `json:"branch"`
-	Score         float64 `json:"score"`
+	Name               string  `json:"human_name"`
+	DefaultBranch      string  `json:"branch"`
+	GithubOrganization string  `json:"github_organization"`
+	GithubSlug         string  `json:"github_slug"`
+	Score              float64 `json:"score"`
 }
 
 func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error) {
@@ -25,7 +34,7 @@ func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error
 	repoData, err := c.MakeRequest("GET", requestUrl)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	repo := &CodeClimateRepositoryData{
@@ -36,8 +45,13 @@ func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error
 	err2 := json.Unmarshal([]byte(repoData), repo)
 
 	if err2 != nil {
-		return "", err2
+		return nil, err2
 	}
+
+	// Parsing organisation name
+	repo.Data.Attributes.GithubOrganization = strings.Split(
+		repo.Data.Attributes.GithubSlug, "/",
+	)[0]
 
 	return repo, nil
 }

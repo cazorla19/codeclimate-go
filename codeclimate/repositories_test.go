@@ -1,6 +1,7 @@
 package codeclimate
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -20,5 +21,11 @@ func TestGetRepository(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	fmt.Printf(repo)
+	repoMarshaled, err3 := json.Marshal(repo)
+
+	if err3 != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Printf(string(repoMarshaled))
 }
