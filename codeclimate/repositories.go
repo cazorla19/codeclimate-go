@@ -31,7 +31,9 @@ type CodeClimateRepositoryAttributes struct {
 func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error) {
 	const repoUri string = "/repos"
 	requestUrl := repoUri + "/" + repoId
-	repoData, err := c.MakeRequest("GET", requestUrl)
+	getData := make([]byte, 100)
+
+	repoData, err := c.MakeRequest("GET", requestUrl, getData)
 
 	if err != nil {
 		return nil, err
