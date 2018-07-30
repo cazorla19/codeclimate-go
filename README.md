@@ -14,11 +14,19 @@ go get -u "github.com/babbel/codeclimate-go/codeclimate"
 import "github.com/babbel/codeclimate-go/codeclimate"
 ```
 
+### Init new client
+
+```
+client, err := codeclimate.NewClient("your_api_key")
+```
+
 ### Running the tests
 
 ```bash
 go test -race -v ./...
 ```
+
+In order to run tests, please, set up environment variable `CODECLIMATE_API_TOKEN` to connect to Codeclimate.
 
 ### Contributing
 
