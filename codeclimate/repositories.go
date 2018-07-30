@@ -39,11 +39,7 @@ func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error
 		return nil, err
 	}
 
-	repo := &CodeClimateRepositoryData{
-		Data: &CodeClimateRepository{
-			Attributes: &CodeClimateRepositoryAttributes{},
-		},
-	}
+	repo := &CodeClimateRepositoryData{}
 	err2 := json.Unmarshal([]byte(repoData), repo)
 
 	if err2 != nil {
