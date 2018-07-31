@@ -1,8 +1,6 @@
 // TODO!
-// 1. Implement method to create private repositories
-// 2. Implement method to create public repositories
-// 3. Implement method to update repositories
-// 4. Implement method to delete repositories
+// 1. Implement method to create public repositories
+// 2. Implement method to update repositories
 
 package codeclimate
 
