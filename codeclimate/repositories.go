@@ -30,10 +30,10 @@ type CodeClimateRepositoryAttributes struct {
 
 func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error) {
 	const repoUri string = "/repos"
-	requestUrl := repoUri + "/" + repoId
+	requestUri := repoUri + "/" + repoId
 	getData := make([]byte, 100)
 
-	repoData, err := c.MakeRequest("GET", requestUrl, getData)
+	repoData, err := c.MakeRequest("GET", requestUri, getData)
 
 	if err != nil {
 		return nil, err
@@ -44,6 +44,10 @@ func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error
 
 	if err2 != nil {
 		return nil, err2
+	} else if repo.Data == nil {
+		// If data has not been parsed - then we've got an API error
+		apiError := errors.New(repoData)
+		return nil, apiError
 	}
 
 	// Parsing organisation name
@@ -54,7 +58,7 @@ func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error
 	return repo, nil
 }
 
-func (c *Client) CreatePrivateGithubRepository(orgName string, repoName string) (*CodeClimateRepositoryData, error) {
+func (c *Client) CreateGithubRepository(orgName string, repoName string, private bool) (*CodeClimateRepositoryData, error) {
 	// Check that organisation exist
 	orgData, err := c.GetOrganisations()
 
@@ -81,8 +85,16 @@ func (c *Client) CreatePrivateGithubRepository(orgName string, repoName string) 
 	// Form the data to send request
 	postJson := fmt.Sprintf(`{"data":{"type":"repos","attributes":{"url":"https://github.com/%s/%s"}}}`, orgName, repoName)
 	postData := []byte(postJson)
-	requestUrl := "/orgs/" + orgId + "/repos"
-	newRepoData, requestErr := c.MakeRequest("POST", requestUrl, postData)
+
+	// Setup request URI regarding repository type [public/private]
+	var requestUri string
+	if private == true {
+		requestUri = "/orgs/" + orgId + "/repos"
+	} else {
+		requestUri = "/github/repos"
+	}
+
+	newRepoData, requestErr := c.MakeRequest("POST", requestUri, postData)
 
 	if requestErr != nil {
 		return nil, requestErr

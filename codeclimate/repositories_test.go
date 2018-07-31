@@ -38,7 +38,8 @@ func TestCreatePrivateRepository(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	repo, err2 := client.CreatePrivateGithubRepository("babbel-sandbox", "new.private.babbel")
+	privateRepo := true
+	repo, err2 := client.CreateGithubRepository("babbel-sandbox", "new.private.babbel", privateRepo)
 
 	if err2 != nil {
 		t.Fatal(err)
