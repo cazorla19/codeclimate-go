@@ -15,7 +15,7 @@ func TestGetOrganisations(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	org, err2 := client.GetOrganisations("123456789")
+	org, err2 := client.GetOrganisations()
 
 	if err2 != nil {
 		t.Fatal(err)

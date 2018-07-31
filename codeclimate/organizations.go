@@ -19,7 +19,7 @@ type CodeClimateOrganisationAttributes struct {
 
 const orgUri string = "/orgs"
 
-func (c *Client) GetOrganisations(orgId string) (*CodeClimateOrganisationsData, error) {
+func (c *Client) GetOrganisations() (*CodeClimateOrganisationsData, error) {
 	getData := make([]byte, 100)
 	orgData, err := c.MakeRequest("GET", orgUri, getData)
 

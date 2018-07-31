@@ -8,6 +8,8 @@ package codeclimate
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -50,6 +52,57 @@ func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error
 	repo.Data.Attributes.GithubOrganization = strings.Split(
 		repo.Data.Attributes.GithubSlug, "/",
 	)[0]
+
+	return repo, nil
+}
+
+func (c *Client) CreatePrivateGithubRepository(orgName string, repoName string) (*CodeClimateRepositoryData, error) {
+	// Check that organisation exist
+	orgData, err := c.GetOrganisations()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var orgId string
+	orgExists := false
+
+	for _, organisation := range orgData.Data {
+		if organisation.Attributes.Name == orgName {
+			orgExists = true
+			orgId = organisation.Id
+			break
+		}
+	}
+
+	if orgExists == false {
+		orgErr := errors.New("Requested organisation is not found")
+		return nil, orgErr
+	}
+
+	// Form the data to send request
+	postJson := fmt.Sprintf(`{"data":{"type":"repos","attributes":{"url":"https://github.com/%s/%s"}}}`, orgName, repoName)
+	postData := []byte(postJson)
+	requestUrl := "/orgs/" + orgId + "/repos"
+	newRepoData, requestErr := c.MakeRequest("POST", requestUrl, postData)
+
+	if requestErr != nil {
+		return nil, requestErr
+	}
+
+	// Get the data about repository
+	repo := &CodeClimateRepositoryData{}
+	unmarshalErr := json.Unmarshal([]byte(newRepoData), repo)
+
+	if unmarshalErr != nil {
+		return nil, unmarshalErr
+	} else if repo.Data == nil {
+		// If data has not been parsed - then we've got an API error
+		apiError := errors.New(newRepoData)
+		return nil, apiError
+	}
+
+	repo.Data.Attributes.GithubOrganization = orgName
 
 	return repo, nil
 }
