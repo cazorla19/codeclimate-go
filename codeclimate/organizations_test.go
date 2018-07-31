@@ -18,13 +18,13 @@ func TestGetOrganisations(t *testing.T) {
 	org, err2 := client.GetOrganisations()
 
 	if err2 != nil {
-		t.Fatal(err)
+		t.Fatal(err2)
 	}
 
 	orgMarshaled, err3 := json.Marshal(org)
 
 	if err3 != nil {
-		t.Fatal(err)
+		t.Fatal(err3)
 	}
 
 	fmt.Printf(string(orgMarshaled))
