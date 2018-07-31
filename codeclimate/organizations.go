@@ -1,3 +1,10 @@
+// TODO! After Code Climate will complete their API
+// 1. Implement method to update organisation settings
+// 2. Implement method to delete organisations
+// What should be done already:
+// 1. Implement method to create organisations
+// 2. Implement check if created organisation actually exists
+
 package codeclimate
 
 import (

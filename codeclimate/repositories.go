@@ -1,6 +1,8 @@
-// TODO!
-// 1. Implement method to create public repositories
-// 2. Implement method to update repositories
+// TODO! After Code Climate will complete their API
+// 1. Implement method to update repositories
+// 2. Implement method to delete repositories
+// What should be done already:
+// 1. Implement check if created repository actually exists
 
 package codeclimate
 
