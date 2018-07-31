@@ -21,17 +21,17 @@ const orgUri string = "/orgs"
 
 func (c *Client) GetOrganisations() (*CodeClimateOrganisationsData, error) {
 	getData := make([]byte, 100)
-	orgData, err := c.MakeRequest("GET", orgUri, getData)
+	orgData, requestErr := c.MakeRequest("GET", orgUri, getData)
 
-	if err != nil {
-		return nil, err
+	if requestErr != nil {
+		return nil, requestErr
 	}
 
 	org := &CodeClimateOrganisationsData{}
-	err2 := json.Unmarshal([]byte(orgData), org)
+	unmarshalErr := json.Unmarshal([]byte(orgData), org)
 
-	if err2 != nil {
-		return nil, err2
+	if unmarshalErr != nil {
+		return nil, unmarshalErr
 	}
 
 	return org, nil

@@ -33,17 +33,17 @@ func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error
 	requestUri := repoUri + "/" + repoId
 	getData := make([]byte, 100)
 
-	repoData, err := c.MakeRequest("GET", requestUri, getData)
+	repoData, requestErr := c.MakeRequest("GET", requestUri, getData)
 
-	if err != nil {
-		return nil, err
+	if requestErr != nil {
+		return nil, requestErr
 	}
 
 	repo := &CodeClimateRepositoryData{}
-	err2 := json.Unmarshal([]byte(repoData), repo)
+	unmarshalErr := json.Unmarshal([]byte(repoData), repo)
 
-	if err2 != nil {
-		return nil, err2
+	if unmarshalErr != nil {
+		return nil, unmarshalErr
 	} else if repo.Data == nil {
 		// If data has not been parsed - then we've got an API error
 		apiError := errors.New(repoData)
@@ -60,10 +60,10 @@ func (c *Client) GetRepository(repoId string) (*CodeClimateRepositoryData, error
 
 func (c *Client) CreateGithubRepository(orgName string, repoName string, private bool) (*CodeClimateRepositoryData, error) {
 	// Check that organisation exist
-	orgData, err := c.GetOrganisations()
+	orgData, orgRequestErr := c.GetOrganisations()
 
-	if err != nil {
-		return nil, err
+	if orgRequestErr != nil {
+		return nil, orgRequestErr
 	}
 
 	var orgId string
