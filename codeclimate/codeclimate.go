@@ -38,30 +38,36 @@ func NewClient(token string, opts ...Option) (*Client, error) {
 	return client, nil
 }
 
-func (c *Client) MakeRequest(method string, path string) (string, error) {
+func (c *Client) MakeRequest(method string, path string, postData []byte) (string, error) {
 	httpClient := &http.Client{}
-	postData := make([]byte, 100)
 	targetUrl := c.ApiBasePath + path
-	req, err := http.NewRequest(strings.ToUpper(method), targetUrl, bytes.NewReader(postData))
+	reqMethod := strings.ToUpper(method)
+	data := bytes.NewReader(postData)
+	req, requestErr := http.NewRequest(reqMethod, targetUrl, data)
 
-	if err != nil {
-		return "", err
+	if requestErr != nil {
+		return "", requestErr
 	}
 
 	authHeader := "Token token=" + c.ApiToken
 	req.Header.Add("Accept", "application/vnd.api+json")
 	req.Header.Add("Authorization", authHeader)
-	resp, err := httpClient.Do(req)
-	defer resp.Body.Close()
 
-	if err != nil {
-		return "", err
+	if reqMethod == "POST" {
+		req.Header.Add("Content-Type", "application/vnd.api+json")
 	}
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	resp, responseErr := httpClient.Do(req)
+	defer resp.Body.Close()
 
-	if err != nil {
-		return "", err
+	if responseErr != nil {
+		return "", responseErr
+	}
+
+	bodyBytes, ioErr := ioutil.ReadAll(resp.Body)
+
+	if ioErr != nil {
+		return "", ioErr
 	}
 
 	bodyString := string(bodyBytes)
